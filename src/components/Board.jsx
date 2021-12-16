@@ -1,7 +1,11 @@
 import React from "react";
 import Cell from "./Cell";
 import { useState, useEffect } from "react";
-import { shuffleArray, getNumberedArray } from "../helpers/mineArray";
+import {
+  shuffleArray,
+  getNumberedArray,
+  getAdjacentCellIndices,
+} from "../helpers/mineArray";
 
 /*
     Board should hold state for width, height and seed all mines
@@ -9,10 +13,13 @@ import { shuffleArray, getNumberedArray } from "../helpers/mineArray";
 
 export const Board = () => {
   // Board settings
-  const [width, setWidth] = useState(10); //Width in cells
-  const totalCells = width * width;
+  const [width] = useState(10); //Width in cells
+  const [revealedCells, setRevealedCells] = useState([]); //Array of cells that have been revealed
+  const [totalCells] = useState(width * width);
   const totalMines = 10;
   const [mineLocs, setMineLocs] = useState([]); //Array of mine locations
+  // Cell settings (always square)
+  const [cellWidth] = useState(34); //Width in pixels (convert to useContext later)
 
   useEffect(() => {
     const randMineLocs = new Array(totalCells);
@@ -22,10 +29,37 @@ export const Board = () => {
     const shuffledLocs = shuffleArray(randMineLocs);
     const numberedArr = getNumberedArray(shuffledLocs, width, width);
     setMineLocs(numberedArr);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Cell settings (always square)
-  const [cellWidth, setCellWidth] = useState(34); //Width in pixels (convert to useContext later)
+  const findRevealableIndices = (index) => {
+    const ret = [index];
+
+    // Get adjacent indices
+    const adjacentCells = getAdjacentCellIndices(index, width, mineLocs.length);
+    adjacentCells.forEach((cell) => {
+      ret.push(cell);
+    });
+
+    if (ret.every((cell) => cell !== "")) return ret;
+
+    // Filter out non-empties
+    const emptyAdjacent = adjacentCells.filter((cell) => {
+      return mineLocs[cell] === "";
+    });
+
+    // Recursively find adjacent empties for empties only
+    emptyAdjacent.forEach((cell) => {
+      ret.push(...findRevealableIndices(cell));
+    });
+
+    return ret;
+  };
+
+  const revealAdjacent = (index) => {
+    // Continue process for other empty cells
+    setRevealedCells([...revealedCells, ...findRevealableIndices(index)]);
+  };
 
   return (
     <div
@@ -35,9 +69,16 @@ export const Board = () => {
         width: `${width * cellWidth + cellWidth}px`,
       }}
     >
-      {[...Array(totalCells)].map((_, i) => {
-        return <Cell key={i} width={cellWidth} contains={mineLocs[i]} />;
-      })}
+      {mineLocs.map((cell, index) => (
+        <Cell
+          key={index}
+          index={index}
+          width={cellWidth}
+          contains={cell}
+          revealed={revealedCells.includes(index)}
+          revealAdjacent={revealAdjacent}
+        />
+      ))}
     </div>
   );
 };

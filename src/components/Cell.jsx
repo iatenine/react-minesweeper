@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 
 export const Cell = (props) => {
   // State includes: Display
@@ -11,8 +11,15 @@ export const Cell = (props) => {
     if (display !== "hidden") return;
     else if (typeof props.contains === "number") setDisplay(props.contains);
     else if (props.contains === "mine") setDisplay("mine");
-    else setDisplay("empty");
+    else {
+      setDisplay("empty");
+      props.revealAdjacent(props.index);
+    }
   };
+
+  useEffect(() => {
+    if (props.revealed && display === "hidden") reveal();
+  });
 
   const handleOnClick = (e) => {
     e.preventDefault();

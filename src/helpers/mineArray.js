@@ -22,7 +22,7 @@ export const getNumberedArray = (arr, width, height) => {
   return numberedArray;
 };
 
-function getAdjacentCellIndices(index, width, length) {
+export function getAdjacentCellIndices(index, width, length) {
   // Given a cell index in a 1-d array, divided into rows of width, return the indices of the adjacent cells
   // Determine x, y coordinates of cell
   const x = index % width;
@@ -62,18 +62,3 @@ function getAdjacentCellIndices(index, width, length) {
   // Return array of 1-d array indices
   return oneDimensionIndices;
 }
-
-export const getAdjacentCells = (x, y, width, height) => {
-  const cells = [];
-  for (let i = -1; i < 2; i++) {
-    for (let j = -1; j < 2; j++) {
-      if (i === 0 && j === 0) continue;
-      const newX = x + i;
-      const newY = y + j;
-      if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
-        cells.push([newX, newY]);
-      }
-    }
-  }
-  return cells;
-};
