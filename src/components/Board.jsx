@@ -16,7 +16,7 @@ export const Board = () => {
   const [width] = useState(10); //Width in cells
   const [revealedCells, setRevealedCells] = useState([]); //Array of cells that have been revealed
   const [totalCells] = useState(width * width);
-  const totalMines = 10;
+  const totalMines = 1;
   const [mineLocs, setMineLocs] = useState([]); //Array of mine locations
   // Cell settings (always square)
   const [cellWidth] = useState(34); //Width in pixels (convert to useContext later)
@@ -74,7 +74,7 @@ export const Board = () => {
           key={index}
           index={index}
           width={cellWidth}
-          contains={cell}
+          contains={mineLocs[index]}
           revealed={revealedCells.includes(index)}
           revealAdjacent={revealAdjacent}
         />
