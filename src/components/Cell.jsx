@@ -4,18 +4,32 @@ export const Cell = (props) => {
   // State includes: Display
   // Display states: 'hidden', 'flagged', 'question', 'mine', 'number', 'empty'
 
-  const [display, setDisplay] = useState(props.display);
-  const min = 30;
-  const height = 2; // Set this from higher in the hierarchy at some point
+  const [display, setDisplay] = useState("hidden");
+  const width = props.width;
+
+  const reveal = () => {
+    if (display !== "hidden") return;
+    else if (typeof props.contains === "number") setDisplay(props.contains);
+    else if (props.contains === "mine") setDisplay("mine");
+    else setDisplay("empty");
+  };
 
   const handleOnClick = (e) => {
-    if (display !== "hidden") return;
-    if (props.contains) {
-      console.log("contains " + props.contains);
-      return;
+    e.preventDefault();
+    e.stopPropagation();
+    // Handle right click differently
+    if (e.button === 2) {
+      console.log("Right click");
     }
-    setDisplay("empty");
-    console.log("Empty cell clicked");
+    reveal();
+  };
+
+  const handleRightClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (display === "hidden") setDisplay("flagged");
+    else if (display === "flagged") setDisplay("question");
+    else if (display === "question") setDisplay("hidden");
   };
 
   return (
@@ -24,13 +38,16 @@ export const Cell = (props) => {
         typeof display !== "number" ? `cell ${display}` : `cell number`
       }
       style={{
-        height: `${height}rem`,
-        width: `${height}rem`,
-        lineHeight: `${height}rem`,
-        minWidth: `${min}px`,
-        minHeight: `${min}px`,
+        height: `${width}px`,
+        width: `${width}px`,
+        lineHeight: `${width}px`,
       }}
       onClick={handleOnClick}
-    ></div>
+      onContextMenu={handleRightClick}
+    >
+      {typeof display === "number" ? display : ""}
+    </div>
   );
 };
+
+export default Cell;

@@ -42,6 +42,7 @@ code {
   background-color: red;
 }
 
-.empty {
-  background-color: grey;
+.empty,
+.number {
+  background-color: lightgray;
 }
