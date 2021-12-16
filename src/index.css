@@ -42,6 +42,6 @@ code {
   background-color: red;
 }
 
-.number::after {
-  content: "4kfdsjafjhdsajkfhjawskjfhdjfhakj ";
+.empty {
+  background-color: grey;
 }
