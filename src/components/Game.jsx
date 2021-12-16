@@ -6,6 +6,8 @@ export const Game = () => {
 
     const [score, setScore] = useState(0);
     const [highScore, setHighScore] = useState(0);
+    const [time, setTime] = useState(0);
+    const [gameState, setGameState] = useState('playing');
 
 
     return (
