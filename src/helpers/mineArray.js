@@ -22,6 +22,31 @@ export const getNumberedArray = (arr, width, height) => {
   return numberedArray;
 };
 
+export function getCellsToReveal(index, board, width) {
+  //  Get list of all cells to reveal when an empty cell is clicked
+  const cellsToReveal = new Set([index]);
+  const expandedCells = new Set([]);
+  const cellsToExpand = [index];
+  // const adjacents = getAdjacentCellIndices(index, width, board.length);
+  while (cellsToExpand.length > 0) {
+    const expandingCell = cellsToExpand.pop();
+    expandedCells.add(expandingCell);
+    const adjacents = getAdjacentCellIndices(
+      expandingCell,
+      width,
+      board.length
+    );
+
+    adjacents.forEach((elem) => {
+      // Add all adjacent cells to reveal list
+      cellsToReveal.add(elem);
+      if (board[elem] === "" && !expandedCells.has(elem))
+        cellsToExpand.push(elem);
+    });
+  }
+  return Array.from(cellsToReveal);
+}
+
 export function getAdjacentCellIndices(index, width, length) {
   // Given a cell index in a 1-d array, divided into rows of width, return the indices of the adjacent cells
   // Determine x, y coordinates of cell

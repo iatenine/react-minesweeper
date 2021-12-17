@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   shuffleArray,
   getNumberedArray,
-  getAdjacentCellIndices,
+  getCellsToReveal,
 } from "../helpers/mineArray";
 
 /*
@@ -13,14 +13,15 @@ import {
 
 export const Board = () => {
   // Board settings
-  const [width] = useState(10); //Width in cells
+  const [width] = useState(15); //Width in cells
   const [revealedCells, setRevealedCells] = useState([]); //Array of cells that have been revealed
   const [totalCells] = useState(width * width);
-  const totalMines = 1;
+  const totalMines = 40;
   const [mineLocs, setMineLocs] = useState([]); //Array of mine locations
   // Cell settings (always square)
   const [cellWidth] = useState(34); //Width in pixels (convert to useContext later)
 
+  // Randomly seed board with mines
   useEffect(() => {
     const randMineLocs = new Array(totalCells);
     for (let i = 0; i < totalMines; i++) {
@@ -32,33 +33,10 @@ export const Board = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const findRevealableIndices = (index) => {
-    const ret = [index];
-
-    // Get adjacent indices
-    const adjacentCells = getAdjacentCellIndices(index, width, mineLocs.length);
-    adjacentCells.forEach((cell) => {
-      ret.push(cell);
-    });
-
-    if (ret.every((cell) => cell !== "")) return ret;
-
-    // Filter out non-empties
-    const emptyAdjacent = adjacentCells.filter((cell) => {
-      return mineLocs[cell] === "";
-    });
-
-    // Recursively find adjacent empties for empties only
-    emptyAdjacent.forEach((cell) => {
-      ret.push(...findRevealableIndices(cell));
-    });
-
-    return ret;
-  };
-
+  // Reveal all adjacent cells to revealed empty cells
   const revealAdjacent = (index) => {
-    // Continue process for other empty cells
-    setRevealedCells([...revealedCells, ...findRevealableIndices(index)]);
+    const cellsToReveal = getCellsToReveal(index, mineLocs, width);
+    setRevealedCells([...revealedCells, ...cellsToReveal]);
   };
 
   return (
