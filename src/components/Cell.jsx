@@ -9,9 +9,11 @@ export const Cell = (props) => {
 
   const reveal = () => {
     if (display !== "hidden") return;
-    else if (typeof props.contains === "number") setDisplay(props.contains);
-    else if (props.contains === "mine") setDisplay("mine");
-    else {
+    if (typeof props.contains === "number") setDisplay(props.contains);
+    else if (props.contains === "mine") {
+      setDisplay("mine");
+      props.setGameState("lost");
+    } else {
       setDisplay("empty");
       props.revealAdjacent(props.index);
     }
@@ -25,9 +27,6 @@ export const Cell = (props) => {
     e.preventDefault();
     e.stopPropagation();
     // Handle right click differently
-    if (e.button === 2) {
-      console.log("Right click");
-    }
     reveal();
   };
 
