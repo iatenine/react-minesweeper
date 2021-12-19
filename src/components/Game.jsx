@@ -2,6 +2,10 @@ import { useState, React, useEffect } from "react";
 import Board from "./Board";
 
 const settings = {
+  baby: {
+    width: 5,
+    mines: 1,
+  },
   beginner: {
     width: 9,
     mines: 10,
@@ -29,7 +33,7 @@ export const Game = () => {
   const [highScore, setHighScore] = useState(0);
   const [time, setTime] = useState(0);
   const [gameState, setGameState] = useState("playing");
-  const currSetting = settings.extreme;
+  const currSetting = settings.baby;
 
   // Start timer
   useEffect(() => {
@@ -48,7 +52,10 @@ export const Game = () => {
       console.log("You lost!", "score: ", score, "time: ", time);
       setGameState("idle");
     }
-    if (gameState === "won") alert("You won!");
+    if (gameState === "won") {
+      console.log("You won!", "score: ", score, "time: ", time);
+      setGameState("idle");
+    }
   }, [gameState, score, time]);
 
   return (
@@ -56,6 +63,7 @@ export const Game = () => {
       <Board
         settings={currSetting}
         setScore={setScore}
+        score={score}
         setGameState={setGameState}
         gameState={gameState}
       />

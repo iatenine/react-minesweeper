@@ -10,13 +10,16 @@ export const Cell = (props) => {
   const reveal = () => {
     if (display === "flagged" || display === "question") {
       if (props.contains !== "mine") setDisplay("wrong");
-    } else if (typeof props.contains === "number") setDisplay(props.contains);
-    else if (props.contains === "mine") {
+    } else if (typeof props.contains === "number") {
+      setDisplay(props.contains);
+      props.cellReveal(props.index);
+    } else if (props.contains === "mine") {
       setDisplay("mine");
       props.setGameState("lost");
     } else {
       setDisplay("empty");
       props.revealAdjacent(props.index);
+      props.cellReveal(props.index);
     }
   };
 

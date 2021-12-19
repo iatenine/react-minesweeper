@@ -42,6 +42,13 @@ export const Board = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Check if all non-mine cells have been revealed
+  useEffect(() => {
+    if (revealedCells.length === totalCells - totalMines) {
+      props.setGameState("won");
+    }
+  }, [props, revealedCells, totalCells, totalMines]);
+
   // Reveal all cells upon losing
   useEffect(() => {
     if (props.gameState === "lost") {
@@ -54,9 +61,17 @@ export const Board = (props) => {
   }, [props.gameState, totalCells]);
 
   // Reveal all adjacent cells to revealed empty cells
+  // Add to score based on number of cells revealed
   const revealAdjacent = (index) => {
     const cellsToReveal = getCellsToReveal(index, mineLocs, width);
+    props.setScore(cellsToReveal.length + props.score);
     setRevealedCells([...revealedCells, ...cellsToReveal]);
+  };
+
+  // Add 1 to score for each cell revealed
+  const cellReveal = (index) => {
+    if (revealedCells.includes(index)) return;
+    props.setScore(props.score + 1);
   };
 
   return (
@@ -65,7 +80,6 @@ export const Board = (props) => {
         display: "flex",
         flexWrap: "wrap",
         width: `${width * (cellWidth + 3)}px`,
-        overflow: "scroll",
       }}
     >
       {mineLocs.map((_, index) => (
@@ -77,6 +91,7 @@ export const Board = (props) => {
           revealed={revealedCells.includes(index)}
           revealAdjacent={revealAdjacent}
           setGameState={props.setGameState}
+          cellReveal={cellReveal}
         />
       ))}
     </div>
