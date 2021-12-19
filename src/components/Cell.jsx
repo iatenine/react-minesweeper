@@ -8,8 +8,9 @@ export const Cell = (props) => {
   const width = props.width;
 
   const reveal = () => {
-    if (display !== "hidden") return;
-    if (typeof props.contains === "number") setDisplay(props.contains);
+    if (display === "flagged" || display === "question") {
+      if (props.contains !== "mine") setDisplay("wrong");
+    } else if (typeof props.contains === "number") setDisplay(props.contains);
     else if (props.contains === "mine") {
       setDisplay("mine");
       props.setGameState("lost");
@@ -20,13 +21,18 @@ export const Cell = (props) => {
   };
 
   useEffect(() => {
-    if (props.revealed && display === "hidden") reveal();
+    if (
+      props.revealed &&
+      (display === "hidden" || display === "flagged" || display === "question")
+    )
+      reveal();
   });
 
   const handleOnClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
     // Handle right click differently
+    if (display === "flagged" || display === "question") return;
     reveal();
   };
 

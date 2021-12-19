@@ -46,3 +46,12 @@ code {
 .number {
   background-color: lightgray;
 }
+
+.wrong {
+  background-color: lightcoral;
+}
+
+.wrong::before {
+  color: black;
+  content: "✘";
+}
