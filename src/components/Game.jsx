@@ -1,5 +1,6 @@
 import { useState, React, useEffect } from "react";
 import Board from "./Board";
+import { Display } from "./Display";
 
 const settings = {
   baby: {
@@ -37,11 +38,12 @@ export const Game = () => {
 
   // Start timer
   useEffect(() => {
+    if (gameState !== "playing") return;
     const timer = setInterval(() => {
       setTime(time + 1);
     }, 1000);
     return () => clearInterval(timer);
-  }, [time]);
+  }, [time, gameState]);
 
   useEffect(() => {
     console.log("score: ", score);
@@ -60,6 +62,10 @@ export const Game = () => {
 
   return (
     <div>
+      <div>
+        <Display label="Score" value={score} />
+        <Display label="Time" value={time} />
+      </div>
       <Board
         settings={currSetting}
         setScore={setScore}
