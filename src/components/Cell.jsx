@@ -19,7 +19,6 @@ export const Cell = (props) => {
     } else {
       setDisplay("empty");
       props.revealAdjacent(props.index);
-      props.cellReveal(props.index);
     }
   };
 

@@ -44,10 +44,10 @@ export const Board = (props) => {
 
   // Check if all non-mine cells have been revealed
   useEffect(() => {
-    if (revealedCells.length === totalCells - totalMines) {
+    if (revealedCells.length >= totalCells - totalMines) {
       props.setGameState("won");
     }
-  }, [props, revealedCells, totalCells, totalMines]);
+  }, [revealedCells, totalCells, totalMines, props.score]);
 
   // Reveal all cells upon losing
   useEffect(() => {
@@ -60,18 +60,20 @@ export const Board = (props) => {
     }
   }, [props.gameState, totalCells]);
 
+  // Add 1 to score for each cell revealed
+  const cellReveal = (index) => {
+    if (revealedCells.includes(index)) return;
+    setRevealedCells([...revealedCells, index]);
+    props.setScore(props.score + 1);
+  };
+
   // Reveal all adjacent cells to revealed empty cells
   // Add to score based on number of cells revealed
   const revealAdjacent = (index) => {
     const cellsToReveal = getCellsToReveal(index, mineLocs, width);
-    props.setScore(cellsToReveal.length + props.score);
-    setRevealedCells([...revealedCells, ...cellsToReveal]);
-  };
-
-  // Add 1 to score for each cell revealed
-  const cellReveal = (index) => {
-    if (revealedCells.includes(index)) return;
-    props.setScore(props.score + 1);
+    const newCells = new Set([...revealedCells, ...cellsToReveal]);
+    props.setScore(props.score + [...newCells].length);
+    setRevealedCells([...newCells]);
   };
 
   return (

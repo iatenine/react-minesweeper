@@ -33,7 +33,7 @@ export const Game = () => {
   const [highScore, setHighScore] = useState(0);
   const [time, setTime] = useState(0);
   const [gameState, setGameState] = useState("playing");
-  const currSetting = settings.baby;
+  const currSetting = settings.beginner;
 
   // Start timer
   useEffect(() => {
