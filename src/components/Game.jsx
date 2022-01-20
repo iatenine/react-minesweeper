@@ -34,7 +34,7 @@ export const Game = () => {
   const [highScore, setHighScore] = useState(0);
   const [time, setTime] = useState(0);
   const [gameState, setGameState] = useState("playing");
-  const currSetting = settings.beginner;
+  const currSetting = settings.extreme;
 
   // Start timer
   useEffect(() => {
@@ -44,10 +44,6 @@ export const Game = () => {
     }, 1000);
     return () => clearInterval(timer);
   }, [time, gameState]);
-
-  useEffect(() => {
-    console.log("score: ", score);
-  }, [score]);
 
   useEffect(() => {
     if (gameState === "lost") {
