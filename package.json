@@ -1,5 +1,6 @@
 {
   "name": "minesweeper",
+  "homepage": "https://iatenine.github.io/react-minesweeper/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
